@@ -27,18 +27,22 @@ public class PermissionsRequestor {
 
     public interface ResultListener {
         void permissionsGranted();
+
         void permissionsDenied();
     }
 
     public void request(ResultListener resultListener) {
         this.resultListener = resultListener;
 
-        String[] missingPermissions = getPermissionsToRequest();
-        if (missingPermissions.length == 0) {
-            resultListener.permissionsGranted();
-        } else {
-            ActivityCompat.requestPermissions(activity, missingPermissions, PERMISSIONS_REQUEST_CODE);
-        }
+
+            String[] missingPermissions = getPermissionsToRequest();
+            if (missingPermissions.length == 0) {
+                resultListener.permissionsGranted();
+                return;
+            } else {
+                ActivityCompat.requestPermissions(activity, missingPermissions, PERMISSIONS_REQUEST_CODE);
+            }
+
     }
 
     private String[] getPermissionsToRequest() {

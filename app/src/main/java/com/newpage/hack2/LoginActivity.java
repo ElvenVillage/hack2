@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.transition.ChangeBounds;
 import android.transition.Fade;
 import android.transition.Scene;
@@ -44,7 +45,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean firstLogin = false;
 
-    private String session = null; private String token = null;
+    private String session = null;
+    private String token = null;
 
     class ValidateSessionAndToken extends AsyncTask<Void, Void, Boolean> {
 
@@ -53,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
             MediaType type = MediaType.parse("application/x-www-form-urlencoded");
             OkHttpClient client = new OkHttpClient();
 
-            RequestBody body = RequestBody.create("session="+session+"&token="+token, type);
+            RequestBody body = RequestBody.create("session=" + session + "&token=" + token, type);
             Request request = new Request.Builder().url("https://newpage.ddns.net/tangle/api/validator.php")
                     .post(body)
                     .build();
@@ -66,7 +68,8 @@ public class LoginActivity extends AppCompatActivity {
                             runOnUiThread(() -> makeLoginScreen());
                         }
                     };
-                    Timer timer = new Timer(); timer.schedule(task, 2000);
+                    Timer timer = new Timer();
+                    timer.schedule(task, 1500);
                     return Boolean.valueOf(false);
                 }
             } catch (IOException ex) {
@@ -86,13 +89,8 @@ public class LoginActivity extends AppCompatActivity {
                         });
                     }
                 };
-                runOnUiThread(() -> {
-                    ImageView logo = findViewById(R.id.imageView);
-
-                    TransitionManager.beginDelayedTransition(findViewById(R.id.loginLayout));
-
-                });
-               Timer timer = new Timer(); timer.schedule(task, 1500);
+                Timer timer = new Timer();
+                timer.schedule(task, 1500);
             }
         }
     }
@@ -107,13 +105,13 @@ public class LoginActivity extends AppCompatActivity {
             MediaType type = MediaType.parse("application/x-www-form-urlencoded");
             OkHttpClient client = new OkHttpClient();
 
-            RequestBody body = RequestBody.create("email="+log+"&password="+pass, type);
+            RequestBody body = RequestBody.create("email=" + log + "&password=" + pass, type);
             Request request = new Request.Builder().url("https://newpage.ddns.net/tangle/api/auth.php")
-                        .post(body)
-                        .build();
+                    .post(body)
+                    .build();
 
             try (Response response = client.newCall(request).execute()) {
-                String ans =  response.body().string();
+                String ans = response.body().string();
 
                 if (ans.equals("false")) {
                     Log.e("login eror", "le");
@@ -125,13 +123,11 @@ public class LoginActivity extends AppCompatActivity {
                 saveSessionAndToken();
             } catch (IOException ex) {
                 Log.e("wtf", "idk");
-            }
-            catch (JSONException jex) {
+            } catch (JSONException jex) {
                 Log.e("d", "server");
             }
             return new Boolean(true);
         }
-
 
 
         @Override
@@ -149,7 +145,9 @@ public class LoginActivity extends AppCompatActivity {
         String root = Environment.getExternalStorageDirectory().toString();
         File file = new File(root, "p.txt");
         StringBuilder text = new StringBuilder();
-        text.append(session); text.append("\n"); text.append(token);
+        text.append(session);
+        text.append("\n");
+        text.append(token);
 
         try {
             BufferedWriter wr = new BufferedWriter(new FileWriter(file));
@@ -165,9 +163,11 @@ public class LoginActivity extends AppCompatActivity {
         TextView login = findViewById(R.id.login);
         TextView pass = findViewById(R.id.pass);
 
-        String log = login.getText().toString(); String password = pass.getText().toString();
+        String log = login.getText().toString();
+        String password = pass.getText().toString();
         String[] string = new String[2];
-        string[0] = log; string[1] = password;
+        string[0] = log;
+        string[1] = password;
 
         LoginTask backTask = new LoginTask();
         backTask.execute(string);
@@ -180,49 +180,58 @@ public class LoginActivity extends AppCompatActivity {
 
         PermissionsRequestor permissionsRequestor = new PermissionsRequestor(this);
 
+        final boolean[] gg = {true};
+        while (gg[0]) {
         permissionsRequestor.request(new PermissionsRequestor.ResultListener() {
             @Override
             public void permissionsGranted() {
-                String root = Environment.getExternalStorageDirectory().toString();
-                File file = new File(root, "p.txt");
-                StringBuilder text = new StringBuilder();
-
-                try {
-                    BufferedReader br = new BufferedReader(new FileReader(file));
-                    session = null;
-                    token = null;
-                    String line;
-
-                    while ((line = br.readLine()) != null) {
-                        if (session == null) {
-                            session = line;
-                        } else {
-                            token = line;
-                        }
-                        text.append("\n");
-                    }
-                    br.close();
-                    new ValidateSessionAndToken().execute();
-                } catch (FileNotFoundException fex) {
-                    Log.i("n", "not logined yet");
-                    TimerTask task = new TimerTask() {
-                        @Override
-                        public void run() {
-                            runOnUiThread(() -> makeLoginScreen());
-                        }
-                    };
-                    Timer timer = new Timer(); timer.schedule(task, 2000);
-                    firstLogin = true;
-                } catch (IOException iex) {
-                    Log.e("wtf", "fex");
-                }
+                afterPermissions();
+                gg[0] = false;
             }
 
             @Override
             public void permissionsDenied() {
-                Toast.makeText(LoginActivity.this, "ae", Toast.LENGTH_LONG);
+                Log.e("eeeeeee", "EEEEEEEEE");
             }
-        });
+        });}
+
+    }
+
+    private void afterPermissions() {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File file = new File(root, "p.txt");
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            session = null;
+            token = null;
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                if (session == null) {
+                    session = line;
+                } else {
+                    token = line;
+                }
+                text.append("\n");
+            }
+            br.close();
+            new ValidateSessionAndToken().execute();
+        } catch (FileNotFoundException fex) {
+            Log.i("n", "not logined yet");
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(() -> makeLoginScreen());
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(task, 1000);
+            firstLogin = true;
+        } catch (IOException iex) {
+            Log.e("wtf", "fex");
+        }
     }
 
     private void makeLoginScreen() {
