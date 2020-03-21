@@ -24,7 +24,6 @@ import com.here.sdk.mapviewlite.MapMarker;
 import com.here.sdk.mapviewlite.MapMarkerImageStyle;
 import com.here.sdk.mapviewlite.MapPolyline;
 import com.here.sdk.mapviewlite.MapPolylineStyle;
-import com.here.sdk.mapviewlite.MapScene;
 import com.here.sdk.mapviewlite.MapStyle;
 import com.here.sdk.mapviewlite.MapViewLite;
 import com.here.sdk.mapviewlite.PickMapItemsCallback;
@@ -48,6 +47,8 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ArrayList<HerePoint> currentRoute;
+    private boolean isMarked = false;
 
     class DownloadRouteTask extends AsyncTask<Integer, Void, ArrayList<HerePoint>> {
 
@@ -63,11 +64,13 @@ public class MainActivity extends AppCompatActivity {
                     .post(body)
                     .build();
             try (Response response = client.newCall(request).execute()) {
-                String ans = response.body().string();
+                StringBuilder ans = new StringBuilder(response.body().string());
+                ans.append("]");
+                ans.insert(0, "[");
                 if (ans.equals("false")) {
                     return a;
                 } else {
-                    JSONArray array = new JSONArray(ans);
+                    JSONArray array = new JSONArray(ans.toString());
                     for (int i = 0; i < array.length(); i++) {
                         HerePoint point = new HerePoint(new GeoCoordinates(
                                 array.getJSONObject(i).getDouble("lat"),
@@ -88,26 +91,45 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<HerePoint> result) {
+            currentRoute = result;
+
             ArrayList<Waypoint> waypoints = new ArrayList<>();
+            waypoints.add(new Waypoint(myLocation));
             for (HerePoint h: result) {
                 waypoints.add(h.waypoint);
             }
 
-            //waypoints.add(new Waypoint(myLocation));
-
-            engine.calculateRoute(waypoints, new RoutingEngine.CarOptions(), (routingError, list) -> {
-                if (routingError == null) {
-                    showRouteOnMap(list.get(0));
-                    for (HerePoint h: result) {
-                        mapView.getMapScene().addMapMarker(h.mapMarker);
-                    }
-                }
-            });
+            if (!isMarked)
+                makeMarkers(result);
+            else {
+                deleteMarker(result);
+                makeMarkers(result);
+            }
+            updateRoute(waypoints);
         }
     }
 
+    private void makeMarkers(ArrayList<HerePoint> result) {
+        for (HerePoint h: result) {
+            mapView.getMapScene().addMapMarker(h.mapMarker);
+        }
+    }
+
+    private void deleteMarker(ArrayList<HerePoint> result) {
+        for (HerePoint h: result) {
+            mapView.getMapScene().removeMapMarker(h.mapMarker);
+        }
+    }
+
+    private void updateRoute(ArrayList<Waypoint> waypoints) {
+        engine.calculateRoute(waypoints, new RoutingEngine.CarOptions(), (routingError, list) -> {
+            if (routingError == null) {
+                showRouteOnMap(list.get(0));
+            }
+        });
+    }
+
     private static final String TAG = MainActivity.class.getSimpleName();
-    private PermissionsRequestor permissionsRequestor;
     private MapViewLite mapView;
 
     private EasyWayLocation easyLocation;
@@ -138,8 +160,7 @@ public class MainActivity extends AppCompatActivity {
         myMarker.addImage(myMarkerImage, new MapMarkerImageStyle());
         setTapGestureHandler();
 
-
-        handleAndroidPermissions();
+        initEasyGeo();
 
         try {
             engine = new RoutingEngine();
@@ -179,12 +200,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private static double getRandom(double Min, double Max) {
-        return Min + (int)(Math.random() * ((Max - Min) + 1));
-    }
-
-
     private void showRouteOnMap(Route route) {
         try {
             GeoPolyline polyline = new GeoPolyline(route.getPolyline());
@@ -198,69 +213,63 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void handleAndroidPermissions() {
-        permissionsRequestor = new PermissionsRequestor(this);
-        permissionsRequestor.request(new PermissionsRequestor.ResultListener() {
-
+    private void initEasyGeo() {
+        easyLocation = new EasyWayLocation(MainActivity.this, false, new Listener() {
             @Override
-            public void permissionsGranted() {
+            public void locationOn() {
 
-                easyLocation = new EasyWayLocation(MainActivity.this, false, new Listener() {
-                    @Override
-                    public void locationOn() {
-
-                    }
-
-                    @Override
-                    public void currentLocation(Location location) {
-                        myLocation = new GeoCoordinates(location.getLatitude(), location.getLongitude());
-                        if (mapView != null) {
-                            if (isMyMarkerLanded) {
-                                mapView.getMapScene().removeMapMarker(myMarker);
-                                myMarker.setCoordinates(myLocation);
-                                mapView.getMapScene().addMapMarker(myMarker);
-                            }
-                            mapView.getCamera().setTarget(myLocation);
-                            myMarker.setCoordinates(myLocation);
-                            mapView.getMapScene().addMapMarker(myMarker);
-                            isMyMarkerLanded = true;
-                        }
-                    }
-
-                    @Override
-                    public void locationCancelled() {
-
-                    }
-                });
             }
 
             @Override
-            public void permissionsDenied() {
-                Log.e(TAG, "Permissions denied by user.");
+            public void currentLocation(Location location) {
+                myLocation = new GeoCoordinates(location.getLatitude(), location.getLongitude());
+                if (mapView != null) {
+                    try {
+
+                        if (isMyMarkerLanded) {
+                            mapView.getMapScene().removeMapMarker(myMarker);
+                            isMyMarkerLanded = false;
+                        }
+                        mapView.getCamera().setTarget(myLocation);
+                        myMarker.setCoordinates(myLocation);
+                        mapView.getMapScene().addMapMarker(myMarker);
+                        isMyMarkerLanded = true;
+                    } catch (NullPointerException ex) {
+                        Log.e("wtf", "wtf WTF");
+                    }
+                    if (currentRoute != null) {
+                        ArrayList<Waypoint> waypoints = new ArrayList<>();
+                        waypoints.add(new Waypoint(myLocation));
+                        for (HerePoint h : currentRoute) {
+                            waypoints.add(h.waypoint);
+                        }
+                        updateRoute(waypoints);
+                    }
+
+                }
+            }
+
+            @Override
+            public void locationCancelled() {
+
             }
         });
+
         loadMapScene();
         if (easyLocation != null) {
             easyLocation.startLocation();
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        permissionsRequestor.onRequestPermissionsResult(requestCode, grantResults);
-    }
 
     private void loadMapScene() {
         // Load a scene from the SDK to render the map with a map style.
-        mapView.getMapScene().loadScene(MapStyle.NORMAL_DAY, new MapScene.LoadSceneCallback() {
-            @Override
-            public void onLoadScene(@Nullable MapScene.ErrorCode errorCode) {
-                if (errorCode == null) {
-                    mapView.getCamera().setTarget(myLocation);
-                    mapView.getCamera().setZoomLevel(7);
-                } else {
-                    Log.d(TAG, "onLoadScene failed: " + errorCode.toString());
-                }
+        mapView.getMapScene().loadScene(MapStyle.NORMAL_DAY, errorCode -> {
+            if (errorCode == null) {
+                mapView.getCamera().setTarget(myLocation);
+                mapView.getCamera().setZoomLevel(14);
+            } else {
+                Log.d(TAG, "onLoadScene failed: " + errorCode.toString());
             }
         });
     }

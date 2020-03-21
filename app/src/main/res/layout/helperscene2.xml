@@ -8,10 +8,10 @@
         android:layout_height="wrap_content"
 
         android:scaleType="centerInside"
-        android:src="@drawable/h1" />
+        android:src="@drawable/logo" />
 
     <ImageView
-        android:id="@+id/nextButton1"
+        android:id="@+id/nextbutton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"

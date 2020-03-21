@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void run() {
                         runOnUiThread(() -> {
                             LoginActivity.this.startActivity(new Intent(LoginActivity.this, WaysActivity.class));
+                            finish();
                         });
                     }
                 };
@@ -137,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                     saveSessionAndToken();
                 }
                 LoginActivity.this.startActivity(new Intent(LoginActivity.this, WaysActivity.class));
+                finish();
             }
         }
     }
@@ -176,25 +178,39 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
         PermissionsRequestor permissionsRequestor = new PermissionsRequestor(this);
 
         final boolean[] gg = {true};
         while (gg[0]) {
-        permissionsRequestor.request(new PermissionsRequestor.ResultListener() {
-            @Override
-            public void permissionsGranted() {
-                afterPermissions();
-                gg[0] = false;
-            }
+            permissionsRequestor.request(new PermissionsRequestor.ResultListener() {
+                @Override
+                public void permissionsGranted() {
+                    if (!hasBeenInstalled()) {
+                        startActivity(new Intent(LoginActivity.this, HelperActivity.class));
+                    }
+                    afterPermissions();
+                    gg[0] = false;
+                }
 
-            @Override
-            public void permissionsDenied() {
-                Log.e("eeeeeee", "EEEEEEEEE");
-            }
-        });}
+                @Override
+                public void permissionsDenied() {
+                    Log.e("eeeeeee", "EEEEEEEEE");
+                }
+            });
+        }
 
+    }
+
+    private boolean hasBeenInstalled() {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File file = new File(root, "f.txt");
+        if (file.exists()) {
+            return true;
+        }
+        return false;
     }
 
     private void afterPermissions() {
