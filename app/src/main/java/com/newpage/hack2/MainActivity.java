@@ -7,14 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.easywaylocation.EasyWayLocation;
 import com.example.easywaylocation.Listener;
 import com.here.sdk.core.GeoCoordinates;
 import com.here.sdk.core.GeoPolyline;
+import com.here.sdk.core.Metadata;
 import com.here.sdk.core.Point2D;
 import com.here.sdk.core.errors.InstantiationErrorException;
 import com.here.sdk.gestures.TapListener;
@@ -26,8 +26,6 @@ import com.here.sdk.mapviewlite.MapPolyline;
 import com.here.sdk.mapviewlite.MapPolylineStyle;
 import com.here.sdk.mapviewlite.MapStyle;
 import com.here.sdk.mapviewlite.MapViewLite;
-import com.here.sdk.mapviewlite.PickMapItemsCallback;
-import com.here.sdk.mapviewlite.PickMapItemsResult;
 import com.here.sdk.mapviewlite.PixelFormat;
 import com.here.sdk.routing.Route;
 import com.here.sdk.routing.RoutingEngine;
@@ -49,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<HerePoint> currentRoute;
     private boolean isMarked = false;
+
+    AlertDialog.Builder builder;
 
     class DownloadRouteTask extends AsyncTask<Integer, Void, ArrayList<HerePoint>> {
 
@@ -150,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        builder = new AlertDialog.Builder(this);
+
         Intent intent = getIntent();
         int id = intent.getIntExtra("id", 0);
 
@@ -182,20 +184,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void pickMapMarker(final Point2D touchPoint) {
         float radiusInPixel = 2;
-        mapView.pickMapItems(touchPoint, radiusInPixel, new PickMapItemsCallback() {
-            @Override
-            public void onMapItemsPicked(@Nullable PickMapItemsResult pickMapItemsResult) {
-                if (pickMapItemsResult == null) {
-                    return;
-                }
-
-                MapMarker topmostMapMarker = pickMapItemsResult.getTopmostMarker();
-                if (topmostMapMarker == null) {
-                    return;
-                }
-                Toast.makeText(MainActivity.this,
-                        String.valueOf(topmostMapMarker.getCoordinates().latitude), Toast.LENGTH_LONG);
+        mapView.pickMapItems(touchPoint, radiusInPixel, pickMapItemsResult -> {
+            if (pickMapItemsResult == null) {
+                return;
             }
+
+            MapMarker topmostMapMarker = pickMapItemsResult.getTopmostMarker();
+            if (topmostMapMarker == null) {
+                return;
+            }
+            Metadata metadata = topmostMapMarker.getMetadata();
+            String message = metadata.getString("message");
+            String title = metadata.getString("title");
+
+           AlertDialog dialog = builder
+                    .setMessage(message)
+                    .setTitle(title)
+                    .create();
+            dialog.show();
         });
     }
 
@@ -263,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void loadMapScene() {
-        // Load a scene from the SDK to render the map with a map style.
+
         mapView.getMapScene().loadScene(MapStyle.NORMAL_DAY, errorCode -> {
             if (errorCode == null) {
                 mapView.getCamera().setTarget(myLocation);

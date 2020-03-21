@@ -1,6 +1,7 @@
 package com.newpage.hack2;
 
 import com.here.sdk.core.GeoCoordinates;
+import com.here.sdk.core.Metadata;
 import com.here.sdk.mapviewlite.MapImage;
 import com.here.sdk.mapviewlite.MapMarker;
 import com.here.sdk.mapviewlite.MapMarkerImageStyle;
@@ -17,6 +18,10 @@ public class HerePoint {
         this.description = description;
         waypoint = new Waypoint(geos);
         mapMarker = new MapMarker(geos);
+        Metadata metadata = new Metadata();
+        metadata.setString("title", "k");
+        metadata.setString("message", description);
+        mapMarker.setMetadata(metadata);
         mapMarker.addImage(image, new MapMarkerImageStyle());
     }
 
