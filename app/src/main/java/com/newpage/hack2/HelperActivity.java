@@ -28,7 +28,7 @@ public class HelperActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_helper);
 
-        String root = Environment.getExternalStorageDirectory().toString();
+        String root = getFilesDir().toString();
         File file = new File(root, "f.txt");
         String text = "r";
 

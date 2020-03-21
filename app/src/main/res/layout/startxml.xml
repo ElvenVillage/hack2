@@ -8,7 +8,10 @@
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@android:dimen/thumbnail_height"
+        android:layout_marginTop="270dp"
         android:layout_weight="1"
-        app:srcCompat="@drawable/logomini" />
+        android:scaleType="fitStart"
+        android:scaleX="0.4"
+        android:scaleY="0.4"
+        app:srcCompat="@drawable/logo" />
 </LinearLayout>

@@ -6,21 +6,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.json.JSONArray;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +29,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class WaysActivity extends AppCompatActivity {
+
+    private boolean hasCardsDownloaded = false;
+
+
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -62,6 +60,7 @@ public class WaysActivity extends AppCompatActivity {
 
     class MyCardView extends CardView {
         public int id;
+
         MyCardView(Context context, int id) {
             super(context);
             this.id = id;
@@ -148,9 +147,14 @@ public class WaysActivity extends AppCompatActivity {
 
                 int finalI = i;
                 cardView.setOnClickListener(v -> {
-                    WaysActivity.this.startActivity(new Intent(
-                            WaysActivity.this, MainActivity.class
-                    ).putExtra("id", finalI));
+                    try {
+                        WaysActivity.this.startActivity(new Intent(
+                                WaysActivity.this, MainActivity.class
+                        ).putExtra("id", Integer.valueOf(array.getJSONObject(String.valueOf(finalI)).
+                                getString("id"))));
+                    } catch (JSONException jex) {
+                        jex.printStackTrace();
+                    }
                 });
 
                 try {
@@ -160,16 +164,49 @@ public class WaysActivity extends AppCompatActivity {
                     Log.e("ea", "Ea");
                 }
             }
+            hasCardsDownloaded = true;
         }
+    }
+
+    private void clickListenerOnCat(String cat) {
+
+        if (!hasCardsDownloaded) {
+            checkroutes(cat);
+        } else {
+            removeCards();
+            checkroutes(cat);
+        }
+    }
+
+    private void removeCards() {
+        for (CardView v: cardViews) {
+            ((ViewGroup)v.getParent()).removeView(v);
+        }
+        cardViews = new ArrayList<MyCardView>();
+        hasCardsDownloaded = false;
+    }
+
+    private void checkroutes(String cat) {
+        new CheckRoutesTask().execute(cat);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ways);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        new CheckRoutesTask().execute("pop");
+        ImageView cat1 = findViewById(R.id.cat1);
+        cat1.setOnClickListener(v -> clickListenerOnCat("pop"));
+
+        ImageView cat2 = findViewById(R.id.cat2);
+        cat2.setOnClickListener(v -> clickListenerOnCat("pop"));
+
+        ImageView cat3 = findViewById(R.id.cat3);
+        cat3.setOnClickListener(v -> clickListenerOnCat("pop"));
+
+        ImageView cat4 = findViewById(R.id.cat4);
+        cat4.setOnClickListener(v -> clickListenerOnCat("pop"));
     }
+
+
 }

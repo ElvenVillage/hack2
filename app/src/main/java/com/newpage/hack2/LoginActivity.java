@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveSessionAndToken() {
-        String root = Environment.getExternalStorageDirectory().toString();
+        String root = getFilesDir().toString();
         File file = new File(root, "p.txt");
         StringBuilder text = new StringBuilder();
         text.append(session);
@@ -206,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean hasBeenInstalled() {
-        String root = Environment.getExternalStorageDirectory().toString();
+        String root = getFilesDir().toString();
         File file = new File(root, "f.txt");
         if (file.exists()) {
             return true;
@@ -215,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void afterPermissions() {
-        String root = Environment.getExternalStorageDirectory().toString();
+        String root = getFilesDir().toString();
         File file = new File(root, "p.txt");
         StringBuilder text = new StringBuilder();
 
