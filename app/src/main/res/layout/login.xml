@@ -12,42 +12,67 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="178dp"
         android:layout_marginTop="16dp"
         android:focusableInTouchMode="false"
         android:isScrollContainer="false"
+        android:scaleType="fitStart"
+        android:scaleX="0.4"
+        android:scaleY="0.4"
         app:srcCompat="@drawable/logo" />
 
     <EditText
         android:id="@+id/login"
+        style="@style/Widget.AppCompat.EditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
+        android:layout_marginStart="45dp"
         android:layout_marginTop="22dp"
         android:ems="10"
         android:focusableInTouchMode="true"
+        android:hint="Логин"
         android:inputType="textPersonName"
-        android:isScrollContainer="false"
-        android:text="Name" />
+        android:isScrollContainer="false" />
 
     <EditText
         android:id="@+id/pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="54dp"
+        android:layout_marginStart="45dp"
         android:layout_marginTop="38dp"
         android:ems="10"
         android:focusableInTouchMode="true"
+        android:hint="Пароль"
         android:inputType="textPassword"
         android:isScrollContainer="false" />
 
-    <Button
-        android:id="@+id/submitlogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginBottom="95dp"
-        android:focusableInTouchMode="true"
-        android:isScrollContainer="false"
-        android:text="LOGIN" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/submitlogin"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="95dp"
+            android:focusableInTouchMode="true"
+            android:isScrollContainer="false"
+            android:text="Войти"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/regbutton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Регистрация"
+            android:textAlignment="viewStart"
+            android:textColor="@color/colorPrimary" />
+
+    </LinearLayout>
+
 </LinearLayout>

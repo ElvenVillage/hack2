@@ -1,6 +1,7 @@
 package com.newpage.hack2;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -265,6 +266,13 @@ public class LoginActivity extends AppCompatActivity {
         set.setInterpolator(new AccelerateInterpolator());
         TransitionManager.go(scene2, set);
 
+
         findViewById(R.id.submitlogin).setOnClickListener(v -> loginPress());
+        findViewById(R.id.regbutton).setOnClickListener(v -> {
+            String url = "https://newpage.ddns.net/tangle/reg/";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        });
     }
 }

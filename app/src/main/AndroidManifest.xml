@@ -21,7 +21,6 @@
             android:name=".WaysActivity"
             android:label="@string/title_activity_ways"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".RegisterActivity" />
         <activity
             android:name=".LoginActivity"
             android:windowSoftInputMode="stateHidden|adjustPan|adjustNothing">
