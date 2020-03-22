@@ -14,17 +14,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:text="name у вас 10500 баллов"
-        android:textColor="#ffffff"
+        android:text="name у вас m баллов"
         android:textAlignment="center"
+        android:textColor="#ffffff"
         android:textSize="16sp"></TextView>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#ffffff"
         android:background="@color/colorPrimary"
+        android:text="n до след уровня"
         android:textAlignment="center"
-        android:text="10500 до след уровня"
+        android:textColor="#ffffff"
         android:textSize="14sp">
 
     </TextView>
@@ -32,8 +33,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
         android:paddingTop="100dp"
-        android:text="тут ничего нет"/>
+        android:text="@string/large_text"
+        android:textAlignment="center" />
 
 </LinearLayout>

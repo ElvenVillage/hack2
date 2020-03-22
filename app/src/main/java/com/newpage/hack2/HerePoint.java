@@ -19,7 +19,7 @@ public class HerePoint {
         waypoint = new Waypoint(geos);
         mapMarker = new MapMarker(geos);
         Metadata metadata = new Metadata();
-        metadata.setString("title", "k");
+        metadata.setString("title", " ");
         metadata.setString("message", description);
         mapMarker.setMetadata(metadata);
         mapMarker.addImage(image, new MapMarkerImageStyle());
