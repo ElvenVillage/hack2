@@ -15,6 +15,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/colorPrimary" />
+
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,24 +36,32 @@
                     android:id="@+id/cat1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/top"></ImageView>
 
                 <ImageView
                     android:id="@+id/cat2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/dostopr"></ImageView>
 
                 <ImageView
                     android:id="@+id/cat3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/mesta"></ImageView>
 
                 <ImageView
                     android:id="@+id/cat4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/priroda"></ImageView>
             </LinearLayout>
         </HorizontalScrollView>

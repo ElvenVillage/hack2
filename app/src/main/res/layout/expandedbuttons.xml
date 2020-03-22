@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/expandRootOnMap"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchorGravity="bottom|end"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/expandRootOnMap"
+        app:srcCompat="@drawable/like" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/lkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchorGravity="bottom|end"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/expandRootOnMap"
+        app:srcCompat="@drawable/lk" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchorGravity="bottom|end"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/expandRootOnMap"
+        app:srcCompat="@drawable/close" />
+</LinearLayout>

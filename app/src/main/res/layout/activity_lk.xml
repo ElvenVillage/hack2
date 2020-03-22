@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/colorPrimary" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="name у вас 10500 баллов"
+        android:textColor="#ffffff"
+        android:textAlignment="center"
+        android:textSize="16sp"></TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:background="@color/colorPrimary"
+        android:textAlignment="center"
+        android:text="10500 до след уровня"
+        android:textSize="14sp">
+
+    </TextView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:paddingTop="100dp"
+        android:text="тут ничего нет"/>
+
+</LinearLayout>

@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import okhttp3.MediaType;
@@ -82,6 +83,8 @@ public class WaysActivity extends AppCompatActivity {
                     .post(body)
                     .build();
             try (Response response = client.newCall(request).execute()) {
+                //byte[] bytes = response.body().bytes();
+                //String ans = new String(bytes, StandardCharsets.UTF_8);
                 String ans = response.body().string();
                 if (ans.equals("false")) {
                     return null;
@@ -160,6 +163,8 @@ public class WaysActivity extends AppCompatActivity {
                 try {
                     label.setText(array.getJSONObject(String.valueOf(i)).getString("title"));
                     rate.setText(array.getJSONObject(String.valueOf(i)).getString("rate"));
+
+
                 } catch (JSONException jex) {
                     Log.e("ea", "Ea");
                 }

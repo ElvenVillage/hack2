@@ -4,7 +4,16 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.transition.Fade;
+import android.transition.Scene;
+import android.transition.Slide;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -65,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     .build();
             try (Response response = client.newCall(request).execute()) {
                 StringBuilder ans = new StringBuilder(response.body().string());
-                ans.append("]");
                 ans.insert(0, "[");
+                ans.append("]");
                 if (ans.equals("false")) {
                     return a;
                 } else {
@@ -144,6 +153,33 @@ public class MainActivity extends AppCompatActivity {
 
     boolean isMyMarkerLanded = false;
 
+    private void from1to2() {
+        ViewGroup rootLayout = findViewById(R.id.odinLayout);
+        final Scene scene2 = Scene.getSceneForLayout(rootLayout, R.layout.expandedbuttons, this);
+        TransitionSet set = new TransitionSet();
+        set.addTransition(new Slide(Gravity.LEFT));
+        set.setOrdering(TransitionSet.ORDERING_TOGETHER);
+        set.setDuration(600);
+        set.setInterpolator(new AccelerateInterpolator());
+        TransitionManager.go(scene2, set);
+
+        View view2 = findViewById(R.id.closeButton);
+        View lkButton = findViewById(R.id.lkButton);
+        lkButton.setOnClickListener(v -> {
+            startActivity(new Intent(this, Lk.class));
+        });
+        view2.setOnClickListener(k -> {
+            final Scene scene1 = Scene.getSceneForLayout(rootLayout, R.layout.startwithexoand, this);
+            set.setOrdering(TransitionSet.ORDERING_TOGETHER);
+            set.setDuration(1000);
+            set.setInterpolator(new AccelerateInterpolator());
+            TransitionManager.go(scene1, set);
+
+            View newView1 = findViewById(R.id.fab);
+            newView1.setOnClickListener(v -> from1to2());
+        });
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +197,9 @@ public class MainActivity extends AppCompatActivity {
         mapView.onCreate(savedInstanceState);
         myMarker.addImage(myMarkerImage, new MapMarkerImageStyle());
         setTapGestureHandler();
+
+        View view = findViewById(R.id.fab);
+        view.setOnClickListener(v -> from1to2());
 
         initEasyGeo();
 

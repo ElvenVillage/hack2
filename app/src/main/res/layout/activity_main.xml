@@ -13,4 +13,16 @@
     </com.here.sdk.mapviewlite.MapViewLite>
 
 
+
+    <LinearLayout
+        android:id="@+id/odinLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <include layout="@layout/startwithexoand"></include>
+    </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
