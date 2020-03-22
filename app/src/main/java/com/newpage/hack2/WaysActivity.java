@@ -7,9 +7,14 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -274,6 +279,8 @@ public class WaysActivity extends AppCompatActivity {
 
     private void updateChas() {
         ImageView chas = findViewById(R.id.gesturechas);
+        ViewGroup root = findViewById(R.id.gesturechasroot);
+        TransitionManager.beginDelayedTransition(root);
         switch (currentChas) {
             case 1: {
                 chas.setImageResource(R.drawable.chas1);
@@ -318,6 +325,8 @@ public class WaysActivity extends AppCompatActivity {
 
     private void updatePesh() {
         ImageView pesh = findViewById(R.id.gesturevelo);
+        ViewGroup root = findViewById(R.id.gesturepeshroot);
+        TransitionManager.beginDelayedTransition(root);
         switch (currentPesh) {
             case 1: {
                 pesh.setImageResource(R.drawable.pesh);

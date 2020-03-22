@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.transition.Fade;
 import android.transition.Scene;
 import android.transition.Slide;
 import android.transition.TransitionManager;
@@ -57,13 +56,18 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<HerePoint> currentRoute;
     private boolean isMarked = false;
 
+    private boolean isPolylined = false;
+
     AlertDialog.Builder builder;
+
+    private GeoPolyline polyline;
+    private MapPolyline mapPolyline;
 
     class DownloadRouteTask extends AsyncTask<Integer, Void, ArrayList<HerePoint>> {
 
         @Override
         protected ArrayList<HerePoint> doInBackground(Integer... voids) {
-           ArrayList<HerePoint> a = new ArrayList<>();
+            ArrayList<HerePoint> a = new ArrayList<>();
 
             MediaType type = MediaType.parse("application/x-www-form-urlencoded");
             OkHttpClient client = new OkHttpClient();
@@ -95,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Json", "jex");
             }
 
-           return a;
+            return a;
         }
 
         @Override
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
             ArrayList<Waypoint> waypoints = new ArrayList<>();
             waypoints.add(new Waypoint(myLocation));
-            for (HerePoint h: result) {
+            for (HerePoint h : result) {
                 waypoints.add(h.waypoint);
             }
 
@@ -119,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeMarkers(ArrayList<HerePoint> result) {
-        for (HerePoint h: result) {
+        for (HerePoint h : result) {
             mapView.getMapScene().addMapMarker(h.mapMarker);
         }
     }
 
     private void deleteMarker(ArrayList<HerePoint> result) {
-        for (HerePoint h: result) {
+        for (HerePoint h : result) {
             mapView.getMapScene().removeMapMarker(h.mapMarker);
         }
     }
@@ -178,7 +182,9 @@ public class MainActivity extends AppCompatActivity {
             View newView1 = findViewById(R.id.fab);
             newView1.setOnClickListener(v -> from1to2());
         });
-    };
+    }
+
+    ;
 
 
     @Override
@@ -236,26 +242,78 @@ public class MainActivity extends AppCompatActivity {
             String message = metadata.getString("message");
             String title = metadata.getString("title");
 
-           AlertDialog dialog = builder
+            AlertDialog.Builder dialog = builder
                     .setMessage(message)
-                    .setTitle(title)
-                    .create();
+                    .setTitle(title);
+            if (distance(myLocation, topmostMapMarker.getCoordinates()) < 100) {
+                builder.setPositiveButton("я там был", (dialog1, which) -> {
+                    int i = 0;
+                    for (; i < currentRoute.size(); i++) {
+                        if (currentRoute.get(i).description.equals(
+                                message
+                        )) {
+                            break;
+                        }
+                    }
+                    deleteMarker(currentRoute);
+                    removePolyline();
+                    currentRoute.remove(i);
+                    ArrayList<Waypoint> waypoints = new ArrayList<>();
+                    waypoints.add(new Waypoint(myLocation));
+                    for (HerePoint h : currentRoute) {
+                        waypoints.add(h.waypoint);
+                    }
+                    updateRoute(waypoints);
+                    makeMarkers(currentRoute);
+
+                });
+            }
+
+
             dialog.show();
         });
     }
 
+    private static double haversine(double lat1, double lon1, double lat2, double lon2) {
+        double R = 6372.8;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
+
+        double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return R * c;
+    }
+
+
+    private double distance(GeoCoordinates myLocation, GeoCoordinates coordinates) {
+        return haversine(
+                myLocation.latitude, myLocation.longitude,
+                coordinates.latitude, coordinates.longitude
+        );
+    }
+
 
     private void showRouteOnMap(Route route) {
+        if (isPolylined) {
+            removePolyline();
+        }
         try {
-            GeoPolyline polyline = new GeoPolyline(route.getPolyline());
+            polyline = new GeoPolyline(route.getPolyline());
             MapPolylineStyle mapPolylineStyle = new MapPolylineStyle();
             mapPolylineStyle.setColor(0x00908AA0, PixelFormat.RGBA_8888);
             mapPolylineStyle.setWidth(10);
-            MapPolyline routeMapPolyline = new MapPolyline(polyline, mapPolylineStyle);
-            mapView.getMapScene().addMapPolyline(routeMapPolyline);
+            mapPolyline = new MapPolyline(polyline, mapPolylineStyle);
+            mapView.getMapScene().addMapPolyline(mapPolyline);
+            isPolylined = true;
         } catch (InstantiationErrorException iex) {
             Toast.makeText(MainActivity.this, "er", Toast.LENGTH_LONG);
         }
+    }
+
+    private void removePolyline() {
+        mapView.getMapScene().removeMapPolyline(mapPolyline);
     }
 
     private void initEasyGeo() {

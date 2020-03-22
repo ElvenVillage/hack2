@@ -38,7 +38,6 @@
                 android:id="@+id/categories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/customborder"
                 android:orientation="horizontal"
                 android:translationX="-20dp">
 
@@ -46,24 +45,32 @@
                     android:id="@+id/cat1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/top"></ImageView>
 
                 <ImageView
                     android:id="@+id/cat2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/dostopr"></ImageView>
 
                 <ImageView
                     android:id="@+id/cat3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/mesta"></ImageView>
 
                 <ImageView
                     android:id="@+id/cat4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/priroda"></ImageView>
 
                 <ImageView
@@ -71,30 +78,40 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="center"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/resto" />
 
                 <ImageView
                     android:id="@+id/cat6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/otdykh" />
 
                 <ImageView
                     android:id="@+id/cat7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/magaz" />
 
                 <ImageView
                     android:id="@+id/cat8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/avtolyub" />
 
                 <ImageView
                     android:id="@+id/cat9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
                     app:srcCompat="@drawable/zhiv" />
             </LinearLayout>
         </HorizontalScrollView>
@@ -158,7 +175,7 @@
                         android:id="@+id/gesturevelo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/velo" />
+                        android:src="@drawable/pesh" />
 
 
                 </LinearLayout>
