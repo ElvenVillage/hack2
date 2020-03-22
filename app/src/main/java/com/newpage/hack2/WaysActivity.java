@@ -4,9 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,7 +25,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import okhttp3.MediaType;
@@ -32,6 +36,9 @@ import okhttp3.Response;
 public class WaysActivity extends AppCompatActivity {
 
     private boolean hasCardsDownloaded = false;
+
+    private int currentChas = 1;
+    private int currentPesh = 1;
 
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -137,7 +144,10 @@ public class WaysActivity extends AppCompatActivity {
 
                 cardView.setCardElevation(8f);
                 TextView label = new TextView(WaysActivity.this);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 TextView rate = new TextView(WaysActivity.this);
+                rate.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
 
                 innerInnerLayout.addView(label);
                 innerInnerLayout.addView(rate);
@@ -211,7 +221,118 @@ public class WaysActivity extends AppCompatActivity {
 
         ImageView cat4 = findViewById(R.id.cat4);
         cat4.setOnClickListener(v -> clickListenerOnCat("pop"));
+
+
+
+
+        View chas = findViewById(R.id.gesturechasroot);
+        final GestureDetector gdt = new GestureDetector(new GestureListener());
+        chas.setOnTouchListener((v, event) -> {
+            gdt.onTouchEvent(event);
+            return true;
+        });
+
+        ImageView pesh = findViewById(R.id.gesturevelo);
+        final GestureDetector gdt2 = new GestureDetector(new GestureListener2());
+        pesh.setOnTouchListener((v, event) -> {
+            gdt2.onTouchEvent(event);
+            return true;
+        });
     }
 
 
+
+
+    private int SWIPE_MIN_DISTANCE = 120;
+    private int SWIPE_THRESHOLD_VELOCITY = 200;
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                if (currentChas < 3) {
+                    currentChas++;
+                    updateChas();
+                }
+                return false; // справа налево
+            }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                if (!(currentChas < 1)) {
+                    currentChas--;
+                    updateChas();
+                }
+                return false; // слева направо
+            }
+
+            if(e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                return false; // снизу вверх
+            }  else if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                return false; // сверху вниз
+            }
+            return false;
+        }
+    }
+
+    private void updateChas() {
+        ImageView chas = findViewById(R.id.gesturechas);
+        switch (currentChas) {
+            case 1: {
+                chas.setImageResource(R.drawable.chas1);
+                break;
+            }
+            case 2: {
+                chas.setImageResource(R.drawable.chas2);
+                break;
+            }
+            case 3: {
+                chas.setImageResource(R.drawable.chas3);
+                break;
+            }
+        }
+    }
+
+    private class GestureListener2 extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                if (currentPesh < 3) {
+                    currentPesh++;
+                    updatePesh();
+                }
+                return false; // справа налево
+            }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                if (!(currentPesh < 1)) {
+                    currentPesh--;
+                    updatePesh();
+                }
+                return false; // слева направо
+            }
+
+            if(e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                return false; // снизу вверх
+            }  else if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                return false; // сверху вниз
+            }
+            return false;
+        }
+    }
+
+    private void updatePesh() {
+        ImageView pesh = findViewById(R.id.gesturevelo);
+        switch (currentPesh) {
+            case 1: {
+                pesh.setImageResource(R.drawable.pesh);
+                break;
+            }
+            case 2: {
+                pesh.setImageResource(R.drawable.mash);
+                break;
+            }
+            case 3: {
+                pesh.setImageResource(R.drawable.velo);
+            }
+        }
+    }
 }
+
+
+
